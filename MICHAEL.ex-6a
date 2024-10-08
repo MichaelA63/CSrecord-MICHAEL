@@ -3,7 +3,6 @@ import pandas as pd
 data = np.array([12.34, 45.67, 23.89, 67.45, 89.12, 34.56, 78.90, 56.78, 91.23, 72.34])
 df = pd.DataFrame(data, columns=['Feature'])
 total = df['Feature'].sum()
-print("SARAVANAPRIYAN - 231401501")
 print(f"Total Sum: {total:.2f}")
 average = df['Feature'].mean()
 print(f"Average: {average:.2f}")
