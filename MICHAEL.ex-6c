@@ -20,4 +20,4 @@ print("\nStatistical values based on 'Method' and 'Year':")
 print(stats_by_method_year)
 std_by_method = df.groupby('Method').agg({'Planet Radius': 'std', 'Mass': 'std'}).reset_index()
 print("\nStandard Deviation based on 'Method':")
-print(std_by_method
+print(std_by_method)
