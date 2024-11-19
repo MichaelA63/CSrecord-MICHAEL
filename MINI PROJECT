@@ -24,7 +24,6 @@ def recommend_items(user_id, model, data, top_n=5):
         if item not in rated_items:
             est_rating = model.predict(user_id, item).est
             recommendations.append((item, est_rating))
-    
     recommendations.sort(key=lambda x: x[1], reverse=True)
     return recommendations[:top_n]
 while True:
