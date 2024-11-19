@@ -3,9 +3,9 @@ from surprise import SVD, Dataset, Reader
 from surprise.model_selection import train_test_split
 from surprise import accuracy
 data = {
-    'user_id': [1, 2, 3, 4, 5],
-    'product_id': [101, 102, 103, 104, 105],
-    'rating': [5, 4, 3, 5, 4]
+    'user_id': [1, 2, 3, 1, 2, 3, 4, 4, 5],
+    'product_id': [101, 102, 103, 104, 105, 101, 102, 103, 104],
+    'rating': [5, 4, 3, 5, 4, 2, 4, 3, 5]
 }
 df = pd.DataFrame(data)
 reader = Reader(rating_scale=(1, 5))
@@ -15,16 +15,30 @@ model = SVD()
 model.fit(trainset)
 predictions = model.test(testset)
 rmse = accuracy.rmse(predictions)
-print(f"RMSE: {rmse}")
-def recommend_items(user_id, model, data):
-    all_items = df['product_id'].unique()
-    rated_items = df[df['user_id'] == user_id]['product_id'].values
+print(f"Model RMSE: {rmse:.2f}")
+def recommend_items(user_id, model, data, top_n=5):
+    all_items = data['product_id'].unique()
+    rated_items = data[data['user_id'] == user_id]['product_id'].values
     recommendations = []
     for item in all_items:
         if item not in rated_items:
             est_rating = model.predict(user_id, item).est
             recommendations.append((item, est_rating))
+    
     recommendations.sort(key=lambda x: x[1], reverse=True)
-    return recommendations[:5]
-user_recommendations = recommend_items(1, model, df)
-print("Top Recommendations:", user_recommendations)
+    return recommendations[:top_n]
+while True:
+    try:
+        user_id = int(input("Enter User ID (or 0 to exit): "))
+        if user_id == 0:
+            print("Exiting Recommendation System. Thank you!")
+            break
+        elif user_id not in df['user_id'].unique():
+            print("User ID not found. Please try again.")
+        else:
+            top_recommendations = recommend_items(user_id, model, df)
+            print(f"Top Recommendations for User {user_id}:")
+            for prod, rating in top_recommendations:
+                print(f"Product ID: {prod}, Predicted Rating: {rating:.2f}")
+    except ValueError:
+        print("Invalid input. Please enter a valid User ID.")
